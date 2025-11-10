@@ -420,6 +420,7 @@ cat > ~/.gitconfig << EOF
 [core]
     autocrlf = input
     editor = vim
+    ignorecase = false
 
 [color]
     ui = auto
