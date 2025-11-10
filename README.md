@@ -4,17 +4,33 @@ Opinionated scripts to setup and configure a new MacBook with developer tools an
 
 ## Quick Guide
 
-#### Step 1. Setup CLI Tools
+**Steps for MacBook Setup & Configuration**
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/cli-tools.setup.sh | bash
-```
+-   Step 0: Power on the machine and go through initial macOS setup.
 
-#### Step 2. Customise MacBook (such as Terminal app, Finder app, etc)
+-   Step 1: `Manual process` Log in to iCloud & App Store.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/mac.customisation.sh | bash
-```
+-   Step 2. CLI tools setup:
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/cli-tools.setup.sh | bash
+    ```
+
+-   Step 3: Apps setup (download & install):
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/apps.setup.sh | bash
+    ```
+
+-   Step 4: `Manual process` Log into OneDrive, Bitbucket & GitHub (for SSH setup).
+
+-   Step 5. MacBook customisations (such as Terminal app, Finder app, etc)
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/mac.customisation.sh | bash
+    ```
+
+-   Step 6: `Manual process` Individual app configuration (such as login).
 
 ## 📦 What Gets Installed
 
