@@ -164,17 +164,20 @@ alias np-awscreds='stskeygen --account nationalpenabc --duration 43200 --role "A
 alias dev='npm run dev'
 alias build='npm run build'
 alias start='npm run start'
+alias test='npm run test'
 alias python='python3'
 alias py='python3'
 alias pip='pip3'
 
 # Utilities
+alias cdw='cd ~/bitbucket'
+alias cdp='cd ~/github'
 alias c='clear'
 alias q='exit'
-alias hosts='sudo vim /etc/hosts'  # Edit hosts file
 
 # Fun stuff
 alias weather='curl wttr.in'
+alias 
 
 EOF
 
@@ -400,6 +403,21 @@ mkdir -p "$WORK_DIR"
 echo "   ✅ Created $PERSONAL_DIR (for personal projects)"
 echo "   ✅ Created $WORK_DIR (for work projects)"
 
+# Create global gitignore file
+cat > ~/.gitignore_global << EOF
+# ============================================================================
+# Global Git Ignore
+# This file is managed by dhyeythumar's mac-utilities repository
+# Repository: https://github.com/dhyeythumar/mac-utilities
+# Do not edit manually - changes will be overwritten on next script run
+# ============================================================================
+
+.DS_Store
+node_modules/
+
+EOF
+echo "   ✅ Created ~/.gitignore_global"
+
 # Configure global gitconfig with conditional includes
 cat > ~/.gitconfig << EOF
 # ============================================================================
@@ -421,6 +439,7 @@ cat > ~/.gitconfig << EOF
     autocrlf = input
     editor = vim
     ignorecase = false
+    excludesfile = ~/.gitignore_global
 
 [color]
     ui = auto
@@ -428,6 +447,9 @@ cat > ~/.gitconfig << EOF
 [push]
     default = current
     autoSetupRemote = true
+
+[help]
+	autocorrect = prompt
 
 # Personal Projects (GitHub)
 [includeIf "gitdir:~/personal/"]
@@ -442,11 +464,6 @@ cat > ~/.gitconfig << EOF
 
 [includeIf "gitdir:~/bitbucket/"]
     path = ~/.gitconfig-work
-
-# Default to personal for any other location
-[user]
-    name = $PERSONAL_NAME
-    email = $PERSONAL_EMAIL
 EOF
 
 echo ""
@@ -480,7 +497,8 @@ echo "Customising Finder"
 echo "--------------------------------------------"
 echo ""
 
-SCREENSHOTS_DIR="${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Screenshots/"
+SCREENSHOTS_DIR="${HOME}/OneDrive - National Pen Company/Personal Files/MacBook/Screenshots/"
+SCREENSHOTS_DIR_ENCODED="${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Screenshots/"
 
 echo "1. 📝 Configuring Finder to open Downloads folder in new windows..."
 defaults write com.apple.finder NewWindowTarget -string "PfLo"
@@ -515,7 +533,7 @@ echo -e "\n  Adding new favorites..."
 mysides add Applications file:///Applications/
 mysides add "Desktop (iCloud)" file://${HOME}/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/
 mysides add "Documents (iCloud)" file://${HOME}/Library/Mobile%20Documents/com~apple~CloudDocs/Documents/
-mysides add "Screenshots (OneDrive)" file://${SCREENSHOTS_DIR}
+mysides add "Screenshots (OneDrive)" file://${SCREENSHOTS_DIR_ENCODED}
 mysides add "Documents (OneDrive)" file://${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Documents/
 mysides add Downloads file://${HOME}/Downloads/
 mysides add Home file://${HOME}/
@@ -546,10 +564,16 @@ echo "--------------------------------------------"
 echo -e "\n1. 📝 Configuring Screenshots folder..."
 defaults write com.apple.screencapture location "${SCREENSHOTS_DIR}"
 
-echo "Restarting SystemUIServer to apply changes!"
+echo -e "\nRestarting SystemUIServer to apply changes..."
 killall SystemUIServer 2>/dev/null || true
 
-echo -e "\n2. 📝 Configuring Dock..."
+echo -e "\n2. 📝 Configuring Mission Control (Disable automatic spaces rearrangement)..."
+defaults write com.apple.dock "mru-spaces" -bool "false"
+
+echo -e "\n3. 📝 Configuring Mission Control (Enable group exposure of apps)..."
+defaults write com.apple.dock "expose-group-apps" -bool "true" && killall Dock
+
+echo -e "\n4. 📝 Configuring Hot Corners..."
 # Top-left: Mission Control
 defaults write com.apple.dock wvous-tl-corner -int 2
 defaults write com.apple.dock wvous-tl-modifier -int 0
@@ -566,7 +590,7 @@ defaults write com.apple.dock wvous-bl-modifier -int 0
 defaults write com.apple.dock wvous-br-corner -int 0
 defaults write com.apple.dock wvous-br-modifier -int 0
 
-echo -e "\n3. 📝 Configuring Apps' sequence in Dock..."
+echo -e "\n5. 📝 Configuring Apps' sequence in Dock..."
 
 echo -e "\n  Removing all apps from Dock..."
 dockutil --remove all --no-restart
@@ -588,7 +612,28 @@ dockutil --add "/Applications/Google Chrome.app" --no-restart
 echo -e "\nRestarting Dock to apply all changes!"
 killall Dock 2>/dev/null || true
 
-echo -e "\n4. 📝 Configuring MenuBar..."
+echo -e "\n6. 👨‍💻 [Manually] Configuring Night Shift..."
+echo "   ⚠️  Night Shift settings require manual configuration due to difficulties in automation."
+echo "   📝 Please manually enable these in Displays settings:"
+echo "      • Schedule: Sunset to Sunrise"
+echo "      • Adjust color temperature as desired"
+echo ""
+echo "   Opening Displays settings..."
+open "x-apple.systempreferences:com.apple.Displays-Settings.extension"
+read -p "   Press Enter after configuring Night Shift..." </dev/tty
+
+
+echo -e "\n7. 👨‍💻 [Manually] Configuring Trackpad..."
+echo "   ⚠️  Trackpad settings require manual configuration due to difficulties in automation."
+echo "   📝 Please manually enable these in Trackpad settings:"
+echo "      • Tap to Click"
+echo ""
+echo "   Opening Trackpad settings..."
+open "x-apple.systempreferences:com.apple.Trackpad-Settings.extension"
+read -p "   Press Enter after configuring Trackpad..." </dev/tty
+
+
+echo -e "\n8. 👨‍💻 [Manually] Configuring MenuBar..."
 echo "   ⚠️  Note: Apple removed automation support for Control Center items in macOS Monterey+"
 echo "   📝 Please manually enable these in Control Center settings:"
 echo "      • Battery - Show in Menu Bar (with percentage)"
@@ -597,7 +642,22 @@ echo "      • WiFi - Show in Menu Bar"
 echo ""
 echo "   Opening Control Center settings..."
 open "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"
-read -p "Press Enter when you've configured MenuBar items..." </dev/tty
+read -p "   Press Enter after configuring MenuBar..." </dev/tty
+
+
+echo -e "\n9. 👨‍💻 [Manually] Configuring Privacy Permissions for Microsoft Teams..."
+echo "   ⚠️  Screen & System Audio recording permissions must be manually granted for security reasons."
+echo "   📝 Please enable the following permissions for Microsoft Teams:"
+echo "      • Screen & System Audio Recording"
+echo ""
+echo "   Opening Privacy & Security settings..."
+open "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_ScreenCapture"
+read -p "   Press Enter after configuring Privacy Permissions for Microsoft Teams... " </dev/tty
+
+echo "   💡 Note: If you don't see Microsoft Teams in the list:"
+echo "      • Launch Microsoft Teams at least once"
+echo "      • Try to share screen or record - this will trigger permission prompts"
+echo "      • Then grant the permissions when prompted"
 
 
 echo ""

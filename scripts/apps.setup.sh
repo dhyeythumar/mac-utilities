@@ -33,7 +33,10 @@ trap cleanup EXIT
 
 
 echo "--------------------------------------------"
-echo "Setting up App Store applications"
+echo "Setting up App Store applications (NOTE: mas is not supported on newer macOS versions)"
+echo "   Check https://github.com/mas-cli/mas/issues/1029 issue for more details."
+echo "   If upstream issue is fixed, this script will be updated to install apps from App Store else this section would be deprecated in future releases."
+echo ""
 echo "--------------------------------------------"
 
 # Check if mas is installed
@@ -50,7 +53,6 @@ echo "   If installations fail, please sign in to the App Store and run this scr
 echo ""
 
 echo "📦 Attempting to install Mac App Store applications..."
-echo " ⚠️  NOTE: Most app installations are expected to fail due to mas is facing installation issues on newer macOS versions. Check https://github.com/mas-cli/mas/issues/1029 issue for more details. Once upstream issue is fixed, this script will be updated to install apps from App Store."
 echo ""
 
 # Array of App Store apps (Display Name and App Store ID)
@@ -86,18 +88,15 @@ echo "Setting up GUI applications via Homebrew Cask"
 echo "--------------------------------------------"
 
 # Array of GUI applications to install & manage via Homebrew Cask
-# ⚠️ Note: microsoft-outlook fails to open on MacOS
 declare -a brew_cask_apps=(
     "google-chrome"
     "postman"
     "microsoft-teams"
-    "microsoft-outlook"
     "adobe-creative-cloud"
     "cursor"
     "visual-studio-code"
     "slack"
     "onedrive"
-    "keeper-password-manager"
 )
 
 echo "📦 Installing GUI applications via Homebrew Cask..."
@@ -109,7 +108,9 @@ for app in "${brew_cask_apps[@]}"; do
 
     if ! brew list --cask "$app" &>/dev/null; then
         echo "📦 Installing $app_display..."
-        if brew install --cask "$app"; then
+
+        # Use sudo to leverage the authenticated session and avoid password prompts
+        if sudo brew install --cask "$app"; then
             echo "✅ $app_display installed successfully!"
         else
             echo "⚠️  Warning: Failed to install $app_display, continuing anyway..."
@@ -175,22 +176,22 @@ install_from_dmg() {
     return 0
 }
 
-echo ""
-echo "Installing Comet Browser..."
+# echo ""
+# echo "Installing Example App..."
+# echo "   This is just an example of how to install an app from a DMG file."
+# echo "   You can replace this with the actual app you want to install."
+# echo ""
 
-# Comet Browser by Perplexity
-# Note: The download URL may change. If this fails, visit https://www.perplexity.ai/download-comet
-# to get the latest download link, or consider using Homebrew if a cask becomes available.
-COMET_DOWNLOAD_PAGE_URL="https://www.perplexity.ai/download-comet"
+# EXAMPLE_APP_DOWNLOAD_URL="https://www.example.com/download-example"
 
-# Try to install Comet
-if ! install_from_dmg "Comet" "$COMET_DOWNLOAD_PAGE_URL" "Comet.dmg" "Comet.app"; then
-    echo ""
-    echo "⚠️  Note: If the download failed, the URL might have changed."
-    echo "   Opening $COMET_DOWNLOAD_PAGE_URL to manually download the DMG file..."
-    open "$COMET_DOWNLOAD_PAGE_URL"
-    read -p "Press Enter once you've downloaded the DMG file..." </dev/tty
-fi
+# # Try to install Example App
+# if ! install_from_dmg "Example" "$EXAMPLE_APP_DOWNLOAD_URL" "Example.dmg" "Example.app"; then
+#     echo ""
+#     echo "⚠️  Note: If the download failed, the URL might have changed."
+#     echo "   Opening $EXAMPLE_APP_DOWNLOAD_URL to manually download the DMG file..."
+#     open "$EXAMPLE_APP_DOWNLOAD_URL"
+#     read -p "Press Enter once you've downloaded the DMG file..." </dev/tty
+# fi
 
 
 echo ""

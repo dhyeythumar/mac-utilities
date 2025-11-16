@@ -34,6 +34,34 @@ trap cleanup EXIT
 
 echo ""
 echo "--------------------------------------------"
+echo "Installing Xcode Command Line Tools"
+echo "--------------------------------------------"
+
+if xcode-select -p &>/dev/null; then
+    echo "✅ Xcode Command Line Tools are already installed, skipping..."
+else
+    echo "📦 Installing Xcode Command Line Tools..."
+    echo "   A dialog will appear - please click 'Install' and wait for it to complete."
+    echo "   This may take 5-10 minutes depending on your internet connection."
+    xcode-select --install
+    
+    # Wait for user confirmation
+    echo ""
+    read -p "⏳ Press ENTER once the installation is complete... " -r
+    
+    # Verify installation completed successfully
+    if xcode-select -p &>/dev/null; then
+        echo "✅ Xcode Command Line Tools installed successfully!"
+    else
+        echo "❌ Error: Xcode Command Line Tools installation was not detected."
+        echo "   Please ensure the installation completed successfully and try again."
+        exit 1
+    fi
+fi
+
+
+echo ""
+echo "--------------------------------------------"
 echo "Setting up Oh My Zsh"
 echo "--------------------------------------------"
 
@@ -83,12 +111,12 @@ echo "--------------------------------------------"
 
 # Array of CLI tools to install & manage via Homebrew
 declare -a cli_tools=(
-    "git"
     "nvm"
     "awscli"
     "mysides"
     "dockutil"
     "mas"
+    "netcat"
 )
 
 for tool in "${cli_tools[@]}"; do
@@ -97,8 +125,18 @@ for tool in "${cli_tools[@]}"; do
 
     if ! brew list "$tool" &>/dev/null; then
         echo "📦 Installing $tool_display..."
-        if brew install "$tool"; then
-            echo "✅ $tool_display installed successfully!"
+        
+        # Install and wait for completion
+        if brew install "$tool" 2>&1; then
+            # Explicitly wait for any background processes
+            wait
+            
+            # Verify installation completed
+            if brew list "$tool" &>/dev/null; then
+                echo "✅ $tool_display installed successfully!"
+            else
+                echo "⚠️  Warning: $tool_display installation reported success but package not found, continuing anyway..."
+            fi
         else
             echo "⚠️  Warning: Failed to install $tool_display, continuing anyway..."
         fi
@@ -106,9 +144,19 @@ for tool in "${cli_tools[@]}"; do
         echo "✅ $tool_display is already installed, skipping..."
     fi
 
-    echo "   $tool_display installed version: $(brew list "$tool" --versions)" || echo "   $tool_display version: Not available"
+    # Show installed version
+    if brew list "$tool" &>/dev/null; then
+        echo "   $tool_display installed version: $(brew list "$tool" --versions)"
+    else
+        echo "   $tool_display version: Not available"
+    fi
     echo ""
 done
+
+# Final sync point - ensure all background processes are complete
+echo "⏳ Ensuring all installations are complete..."
+wait
+echo "✅ All CLI tools installation completed!"
 
 
 echo ""
@@ -173,5 +221,11 @@ fi
 
 echo ""
 echo "================================================================================"
-echo "CLI Tools Setup complete! Please restart your terminal to apply the changes. 🚀"
+echo "✅ CLI Tools Setup Complete!"
 echo "================================================================================"
+echo ""
+echo "📌 To apply all changes, your terminal session needs to be restarted."
+echo "🔄 Restarting shell session..."
+echo "   All changes will be available in the new session."
+sleep 2
+exec zsh -l
