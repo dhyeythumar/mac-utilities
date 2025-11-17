@@ -27,7 +27,7 @@ Opinionated scripts to setup and configure a new MacBook with developer tools an
 -   Step 5. MacBook customisations (such as Terminal app, Finder app, etc)
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/mac.customisation.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/scripts/customisation.sh | bash
     ```
 
 -   Step 6: `Manual process` Individual app configuration (such as login).
@@ -68,7 +68,7 @@ Opinionated scripts to setup and configure a new MacBook with developer tools an
 -   **Slack** - Team communication
 -   **OneDrive** - Cloud storage
 
-### `mac.customisation.sh`
+### `customisation.sh`
 
 -   **Terminal**
     -   Monokai Pro (Filter Spectrum) theme
@@ -186,6 +186,6 @@ All scripts use shared utilities from `scripts/common.sh` which provides:
 Feel free to fork and customize for your own setup! The modular structure makes it easy to:
 
 -   Add/remove applications in the `apps.setup.sh` arrays
--   Customize aliases in `mac.customisation.sh`
+-   Customize aliases in `customisation.sh`
 -   Modify system settings to your preference
 -   Extend `common.sh` with your own utility functions
