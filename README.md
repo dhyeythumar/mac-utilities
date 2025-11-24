@@ -32,6 +32,18 @@ Opinionated scripts to setup and configure a new MacBook with developer tools an
 
 -   Step 6: `Manual process` Individual app configuration (such as login).
 
+-   Step 7: Individual app data restoration. (first run the apps so the directories are available)
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/data/restore.sh | bash
+    ```
+
+-   Step 8: Individual app data sync. _(To setup continuous sync process, leverage Apple shortcuts app to auto run the sync script)_
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/data/sync.sh > ~/.mac-utilities/sync.sh && chmod +x ~/.mac-utilities/sync.sh
+    ```
+
 ## ✨ Features
 
 -   🎨 **Color-coded output** for better readability
