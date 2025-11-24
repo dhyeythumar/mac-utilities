@@ -2,10 +2,11 @@
 set -e
 
 SCRIPT_NAME="Test Script"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(pwd)
+COMMON_SCRIPT="${SCRIPT_DIR}/utils/common.sh"
 
 # Source common utilities
-source "${SCRIPT_DIR}/common.sh"
+source "${COMMON_SCRIPT}"
 
 script_notification "🎬 Starting $SCRIPT_NAME" \
     "Overview of the script and what it will do."

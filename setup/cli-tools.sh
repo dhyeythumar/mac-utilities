@@ -4,16 +4,28 @@ set -e
 # Opinionated CLI tools setup script that does all the CLI tools setup on MacBook machine. And its idempotent, so it can be run multiple times without any issues.
 
 SCRIPT_NAME="CLI Tools Setup"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(pwd)
 
-# Download common.sh if not found (for curl | bash usage)
-if [ ! -f "${SCRIPT_DIR}/common.sh" ]; then
-    echo "📥 Downloading common utilities..."
-    curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/setup/common.sh -o "${SCRIPT_DIR}/common.sh"
+# Determine if running from repo or standalone
+# Check if we're in the repo structure (utils/common.sh exists relative to script)
+if [ -f "${SCRIPT_DIR}/utils/common.sh" ]; then
+    # Running from within the repo
+    COMMON_SCRIPT="${SCRIPT_DIR}/utils/common.sh"
+else
+    # Running standalone (downloaded via curl | bash)
+    # Use ~/.mac-utilities for dependencies
+    MAC_UTILS_DIR="${HOME}/.mac-utilities"
+    COMMON_SCRIPT="${MAC_UTILS_DIR}/common.sh"
+    
+    if [ ! -f "${COMMON_SCRIPT}" ]; then
+        echo "📥 Downloading common utilities to ${MAC_UTILS_DIR}..."
+        mkdir -p "${MAC_UTILS_DIR}"
+        curl -fsSL https://raw.githubusercontent.com/dhyeythumar/mac-utilities/refs/heads/main/utils/common.sh -o "${COMMON_SCRIPT}"
+    fi
 fi
 
 # Source common utilities
-source "${SCRIPT_DIR}/common.sh"
+source "${COMMON_SCRIPT}"
 
 script_notification "🎬 Starting $SCRIPT_NAME" \
     "This script requires administrator access. You will be prompted for your password."
