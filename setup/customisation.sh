@@ -197,7 +197,6 @@ alias q='exit'
 
 # Fun stuff
 alias weather='curl wttr.in'
-alias 
 
 EOF
 
