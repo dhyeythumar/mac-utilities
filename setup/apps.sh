@@ -100,8 +100,8 @@ for app in "${brew_cask_apps[@]}"; do
     else
         action "$app_display not found, installing..."
 
-        # Use sudo to leverage the authenticated session and avoid password prompts
-        if sudo brew install --cask "$app"; then
+        # Homebrew handles permissions internally and will prompt for sudo when needed
+        if brew install --cask "$app"; then
             success "$app_display installed successfully!"
         else
             warning "Failed to install $app_display, continuing anyway..."
