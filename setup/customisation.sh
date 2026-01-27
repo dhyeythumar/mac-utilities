@@ -171,8 +171,6 @@ alias tcp='netstat -p tcp -an'
 alias udp='netstat -p udp -an'
 
 # Development
-alias gs-awscreds='stskeygen --account npgoldstar --duration 43200 --role "AWS_Developers_Goldstar"'
-alias np-awscreds='stskeygen --account nationalpenabc --duration 43200 --role "AWS_NPDevelopers-ABC"'
 alias dev='npm run dev'
 alias build='npm run build'
 alias start='npm run start'
@@ -190,8 +188,7 @@ alias status='git status'
 alias log='git log'
 
 # Utilities
-alias cdw='cd ~/bitbucket'
-alias cdp='cd ~/github'
+alias cdgithub='cd ~/github'
 alias c='clear'
 alias q='exit'
 
@@ -248,34 +245,34 @@ fi
 # ========================================
 # WORK PROFILE (Bitbucket)
 # ========================================
-action "Setting up Work Bitbucket Profile..."
-WORK_KEY="$HOME/.ssh/id_ed25519_bitbucket_work"
-WORK_NAME="dhyey.thumar"
-WORK_EMAIL="dhyey.thumar@pens.com"
+# action "Setting up Work Bitbucket Profile..."
+# WORK_KEY="$HOME/.ssh/id_ed25519_bitbucket_work"
+# WORK_NAME="dhyey.thumar"
+# WORK_EMAIL="dhyey.thumar@pens.com"
 
-if [ -f "$WORK_KEY" ]; then
-    info "Work SSH key already exists: $WORK_KEY"
-else
-    echo "⌙  🔐 Generating SSH key for work Bitbucket account..."
-    ssh-keygen -t ed25519 -C "$WORK_EMAIL" -f "$WORK_KEY" -N ""
-    success "Work SSH key generated!"
+# if [ -f "$WORK_KEY" ]; then
+#     info "Work SSH key already exists: $WORK_KEY"
+# else
+#     echo "⌙  🔐 Generating SSH key for work Bitbucket account..."
+#     ssh-keygen -t ed25519 -C "$WORK_EMAIL" -f "$WORK_KEY" -N ""
+#     success "Work SSH key generated!"
 
-    echo ""
-    echo "📋 Your WORK Bitbucket SSH public key (also copied to clipboard)"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    cat "${WORK_KEY}.pub"
-    cat "${WORK_KEY}.pub" | pbcopy
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#     echo ""
+#     echo "📋 Your WORK Bitbucket SSH public key (also copied to clipboard)"
+#     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#     cat "${WORK_KEY}.pub"
+#     cat "${WORK_KEY}.pub" | pbcopy
+#     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    manual_action "Action required:" \
-        "1. Opening Bitbucket SSH settings in Safari..." \
-        "2. Click 'Add key'" \
-        "3. Paste the key and save"
+#     manual_action "Action required:" \
+#         "1. Opening Bitbucket SSH settings in Safari..." \
+#         "2. Click 'Add key'" \
+#         "3. Paste the key and save"
 
-    open -a "Safari" "https://bitbucket.org/account/settings/ssh-keys/" 2>/dev/null || open "https://bitbucket.org/account/settings/ssh-keys/"
+#     open -a "Safari" "https://bitbucket.org/account/settings/ssh-keys/" 2>/dev/null || open "https://bitbucket.org/account/settings/ssh-keys/"
 
-    wait_for_user "Press Enter when you've added the key to Bitbucket..."
-fi
+#     wait_for_user "Press Enter when you've added the key to Bitbucket..."
+# fi
 
 # ========================================
 # SSH CONFIG SETUP
@@ -307,21 +304,21 @@ EOF
     success "Added GitHub Personal SSH config"
 fi
 
-# Add Bitbucket Work config if not exists
-if ! grep -q "# Bitbucket Work" "$SSH_CONFIG" 2>/dev/null; then
-    cat >> "$SSH_CONFIG" << 'EOF'
-# Bitbucket Work
-Host bitbucket.org
-    HostName bitbucket.org
-    User git
-    IdentityFile ~/.ssh/id_ed25519_bitbucket_work
-    AddKeysToAgent yes
-    UseKeychain yes
-    IdentitiesOnly yes
+# # Add Bitbucket Work config if not exists
+# if ! grep -q "# Bitbucket Work" "$SSH_CONFIG" 2>/dev/null; then
+#     cat >> "$SSH_CONFIG" << 'EOF'
+# # Bitbucket Work
+# Host bitbucket.org
+#     HostName bitbucket.org
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519_bitbucket_work
+#     AddKeysToAgent yes
+#     UseKeychain yes
+#     IdentitiesOnly yes
 
-EOF
-    success "Added Bitbucket Work SSH config"
-fi
+# EOF
+#     success "Added Bitbucket Work SSH config"
+# fi
 
 chmod 600 "$SSH_CONFIG"
 success "SSH config file updated!"
@@ -338,14 +335,14 @@ else
     info "GitHub already in known_hosts"
 fi
 
-# Check if bitbucket.org is already in known_hosts
-if ! ssh-keygen -F bitbucket.org >/dev/null 2>&1; then
-    ssh-keyscan -t ed25519 bitbucket.org >> ~/.ssh/known_hosts 2>/dev/null
-    ssh-keyscan -t rsa bitbucket.org >> ~/.ssh/known_hosts 2>/dev/null
-    success "Bitbucket host keys added"
-else
-    info "Bitbucket already in known_hosts"
-fi
+# # Check if bitbucket.org is already in known_hosts
+# if ! ssh-keygen -F bitbucket.org >/dev/null 2>&1; then
+#     ssh-keyscan -t ed25519 bitbucket.org >> ~/.ssh/known_hosts 2>/dev/null
+#     ssh-keyscan -t rsa bitbucket.org >> ~/.ssh/known_hosts 2>/dev/null
+#     success "Bitbucket host keys added"
+# else
+#     info "Bitbucket already in known_hosts"
+# fi
 
 # ========================================
 # GIT CONFIG SETUP
@@ -366,29 +363,29 @@ cat > ~/.gitconfig-personal << EOF
 EOF
 success "Created ~/.gitconfig-personal"
 
-# Create work Git config
-cat > ~/.gitconfig-work << EOF
-# ============================================================================
-# This file is managed by dhyeythumar's mac-utilities repository
-# Repository: https://github.com/dhyeythumar/mac-utilities
-# Do not edit manually - changes will be overwritten on next script run
-# ============================================================================
+# # Create work Git config
+# cat > ~/.gitconfig-work << EOF
+# # ============================================================================
+# # This file is managed by dhyeythumar's mac-utilities repository
+# # Repository: https://github.com/dhyeythumar/mac-utilities
+# # Do not edit manually - changes will be overwritten on next script run
+# # ============================================================================
 
-[user]
-    name = $WORK_NAME
-    email = $WORK_EMAIL
-EOF
-success "Created ~/.gitconfig-work"
+# [user]
+#     name = $WORK_NAME
+#     email = $WORK_EMAIL
+# EOF
+# success "Created ~/.gitconfig-work"
 
 # Setup directories
 PERSONAL_DIR="$HOME/github"
-WORK_DIR="$HOME/bitbucket"
+# WORK_DIR="$HOME/bitbucket"
 
 action "Setting up project directories..."
 mkdir -p "$PERSONAL_DIR"
-mkdir -p "$WORK_DIR"
+# mkdir -p "$WORK_DIR"
 success "Created $PERSONAL_DIR (for personal projects)"
-success "Created $WORK_DIR (for work projects)"
+# success "Created $WORK_DIR (for work projects)"
 
 # Create global gitignore file
 cat > ~/.gitignore_global << EOF
@@ -446,11 +443,11 @@ cat > ~/.gitconfig << EOF
     path = ~/.gitconfig-personal
 
 # Work Projects (Bitbucket)
-[includeIf "gitdir:~/work/"]
-    path = ~/.gitconfig-work
+# [includeIf "gitdir:~/work/"]
+#     path = ~/.gitconfig-work
 
-[includeIf "gitdir:~/bitbucket/"]
-    path = ~/.gitconfig-work
+# [includeIf "gitdir:~/bitbucket/"]
+#     path = ~/.gitconfig-work
 EOF
 
 success "Git configuration complete!"
@@ -463,13 +460,13 @@ echo "🏠 PERSONAL projects (GitHub):"
 echo "   → Clone/create projects in: $PERSONAL_DIR/"
 echo "   → Example: git clone git@github.com:user/repo.git $PERSONAL_DIR/repo"
 echo ""
-echo "💼 WORK projects (Bitbucket):"
-echo "   → Clone/create projects in: $WORK_DIR/"
-echo "   → Example: git clone git@bitbucket.org:team/repo.git $WORK_DIR/repo"
+# echo "💼 WORK projects (Bitbucket):"
+# echo "   → Clone/create projects in: $WORK_DIR/"
+# echo "   → Example: git clone git@bitbucket.org:team/repo.git $WORK_DIR/repo"
 echo ""
 echo "🧪 Test your SSH connections:"
 echo "   → GitHub:    ssh -T git@github.com"
-echo "   → Bitbucket: ssh -T git@bitbucket.org"
+# echo "   → Bitbucket: ssh -T git@bitbucket.org"
 echo ""
 echo "🔍 Verify Git config in any repo:"
 echo "   → cd into a repo and run: git config user.email"
@@ -478,8 +475,8 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 
 section_header "Customising Finder"
-SCREENSHOTS_DIR="${HOME}/OneDrive - National Pen Company/Personal Files/MacBook/Screenshots/"
-SCREENSHOTS_DIR_ENCODED="${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Screenshots/"
+# SCREENSHOTS_DIR="${HOME}/OneDrive - National Pen Company/Personal Files/MacBook/Screenshots/"
+# SCREENSHOTS_DIR_ENCODED="${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Screenshots/"
 
 action "1. Configuring Finder to open Downloads folder in new windows..."
 defaults write com.apple.finder NewWindowTarget -string "PfLo"
@@ -514,8 +511,8 @@ info "Adding new favorites..."
 mysides add Applications file:///Applications/
 mysides add "Desktop (iCloud)" file://${HOME}/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/
 mysides add "Documents (iCloud)" file://${HOME}/Library/Mobile%20Documents/com~apple~CloudDocs/Documents/
-mysides add "Screenshots (OneDrive)" file://${SCREENSHOTS_DIR_ENCODED}
-mysides add "Documents (OneDrive)" file://${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Documents/
+# mysides add "Screenshots (OneDrive)" file://${SCREENSHOTS_DIR_ENCODED}
+# mysides add "Documents (OneDrive)" file://${HOME}/OneDrive%20-%20National%20Pen%20Company/Personal%20Files/MacBook/Documents/
 mysides add Downloads file://${HOME}/Downloads/
 mysides add Home file://${HOME}/
 
@@ -539,8 +536,8 @@ fi
 
 section_header "Customising System Settings"
 
-action "1. Configuring Screenshots folder..."
-defaults write com.apple.screencapture location "${SCREENSHOTS_DIR}"
+# action "1. Configuring Screenshots folder..."
+# defaults write com.apple.screencapture location "${SCREENSHOTS_DIR}"
 
 restart_service "SystemUIServer"
 

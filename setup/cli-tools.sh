@@ -172,28 +172,6 @@ else
 fi
 
 
-section_header "Setting up stskeygen (AWS STS key generator)"
-if command -v stskeygen &>/dev/null; then
-    info "stskeygen is already installed, skipping..."
-else
-    action "stskeygen not found, installing..."
-
-    # Add the tap if not already added
-    if ! brew tap | grep -q "cimpress-mcp/stskeygen-installers"; then
-        echo "Adding Cimpress-MCP tap..."
-        if ! brew tap Cimpress-MCP/stskeygen-installers https://github.com/Cimpress-MCP/stskeygen-installers.git; then
-            error_exit "Failed to add tap"
-        fi
-    fi
-    
-    if brew install Cimpress-MCP/stskeygen-installers/stskeygen; then
-        success "stskeygen installed successfully!"
-    else
-        error_exit "Failed to install stskeygen"
-    fi
-fi
-
-
 script_notification "✅ $SCRIPT_NAME completed successfully!" \
     "📌 To apply all changes, your terminal session needs to be restarted." \
     "🔄 Restarting shell session..."

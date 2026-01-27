@@ -84,12 +84,11 @@ section_header "Setting up GUI applications via Homebrew Cask"
 declare -a brew_cask_apps=(
     "google-chrome"
     "postman"
-    "microsoft-teams"
-    "adobe-creative-cloud"
+    "docker"
+    "antigravity"
     "cursor"
     "visual-studio-code"
     "slack"
-    "onedrive"
 )
 
 for app in "${brew_cask_apps[@]}"; do
