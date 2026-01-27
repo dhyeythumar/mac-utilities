@@ -68,21 +68,37 @@ fi
 
 
 section_header "Installing Homebrew (Package Manager)"
-if command -v brew &>/dev/null; then
-    info "Homebrew is already installed, skipping..."
+
+# Determine the correct Homebrew path based on system architecture
+SYSTEM_ARCH=$(uname -m)
+if [ "$SYSTEM_ARCH" = "arm64" ]; then
+    HOMEBREW_PREFIX="/opt/homebrew"
+else
+    HOMEBREW_PREFIX="/usr/local"
+fi
+
+if [ -f "$HOMEBREW_PREFIX/bin/brew" ]; then
+    info "Homebrew is already installed at $HOMEBREW_PREFIX, skipping installation..."
+elif command -v brew &>/dev/null; then
+    # Homebrew exists but at wrong location for this architecture
+    CURRENT_BREW=$(which brew)
+    warning "Homebrew found at $CURRENT_BREW but expected at $HOMEBREW_PREFIX/bin/brew" \
+        "This may cause architecture mismatches when installing packages" \
+        "Consider reinstalling Homebrew for your $SYSTEM_ARCH architecture"
 else
     action "Homebrew not found, installing..."
 
     if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
         success "Homebrew installed successfully!"
-        
-        # Add Homebrew to PATH for Apple Silicon Macs
-        if [ -f "/opt/homebrew/bin/brew" ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
     else
         error_exit "Failed to install Homebrew"
     fi
+fi
+
+# Always ensure the correct Homebrew is in PATH for this session
+if [ -f "$HOMEBREW_PREFIX/bin/brew" ]; then
+    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+    info "Using Homebrew at $HOMEBREW_PREFIX/bin/brew"
 fi
 
 
