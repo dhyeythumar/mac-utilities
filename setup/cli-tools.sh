@@ -57,6 +57,26 @@ else
 fi
 
 
+section_header "Installing Rosetta 2 (Intel Compatibility Layer)"
+# Rosetta 2 is only needed on Apple Silicon Macs to run Intel-based apps
+if [ "$(uname -m)" = "arm64" ]; then
+    # Check if Rosetta is already installed by looking for the runtime
+    if /usr/bin/pgrep -q oahd 2>/dev/null || [ -f "/Library/Apple/usr/share/rosetta/rosetta" ]; then
+        info "Rosetta 2 is already installed, skipping..."
+    else
+        action "Installing Rosetta 2 for Intel app compatibility..."
+        if softwareupdate --install-rosetta --agree-to-license; then
+            success "Rosetta 2 installed successfully!"
+        else
+            warning "Failed to install Rosetta 2, continuing anyway..." \
+                "Some Intel-based apps may not work until Rosetta is installed"
+        fi
+    fi
+else
+    info "Rosetta 2 is not needed on Intel Macs, skipping..."
+fi
+
+
 section_header "Installing Oh My Zsh"
 if [ -d "$HOME/.oh-my-zsh" ]; then
     info "Oh My Zsh is already installed, skipping..."
