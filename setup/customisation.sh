@@ -188,7 +188,8 @@ alias status='git status'
 alias log='git log'
 
 # Utilities
-alias cdgithub='cd ~/github'
+alias personal='cd ~/codebases/personal'
+alias work='cd ~/codebases/work'
 alias c='clear'
 alias q='exit'
 
